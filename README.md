@@ -10,12 +10,20 @@
 Control de hilos con wait/notify. Productor/consumidor.
 
 1. Revise el funcionamiento del programa y ejecútelo. Mientras esto ocurren, ejecute jVisualVM y revise el consumo de CPU del proceso correspondiente. A qué se debe este consumo?, cual es la clase responsable?
+   <img width="733" height="495" alt="image" src="https://github.com/user-attachments/assets/a7f8d330-8b9a-49d8-8513-e50e76da2377" />
+ ``` txt
+   El alto uso de CPU ocurre porque el hilo del consumidor está ejecutándose en un bucle infinito.
+   La clase que provoca este comportamiento es Consumer.
+```
 2. Haga los ajustes necesarios para que la solución use más eficientemente la CPU, teniendo en cuenta que -por ahora- la producción es lenta y el consumo es rápido. Verifique con JVisualVM que el consumo de CPU se reduzca.
 
 <img width="462" height="403" alt="image" src="https://github.com/user-attachments/assets/98e516cf-0029-4d57-a5e8-bb3d7812e3c1" />
 
+<img width="921" height="531" alt="image" src="https://github.com/user-attachments/assets/ccc9c3e2-3e0b-45fc-8067-5e29af30ac05" />
 
-4. Haga que ahora el productor produzca muy rápido, y el consumidor consuma lento. Teniendo en cuenta que el productor conoce un límite de Stock (cuantos elementos debería tener, a lo sumo en la cola), haga que dicho límite se respete. Revise el API de la colección usada como cola para ver cómo garantizar que dicho límite no se supere. Verifique que, al poner un límite pequeño para el 'stock', no haya consumo alto de CPU ni errores.
+3. Haga que ahora el productor produzca muy rápido, y el consumidor consuma lento. Teniendo en cuenta que el productor conoce un límite de Stock (cuantos elementos debería tener, a lo sumo en la cola), haga que dicho límite se respete. Revise el API de la colección usada como cola para ver cómo garantizar que dicho límite no se supere. Verifique que, al poner un límite pequeño para el 'stock', no haya consumo alto de CPU ni errores.
+<img width="967" height="178" alt="image" src="https://github.com/user-attachments/assets/7d1b7bd8-92bf-4778-96f0-80e02261c1c9" />
+<img width="721" height="67" alt="image" src="https://github.com/user-attachments/assets/475e11f3-b011-48b7-8160-b7aa53cbc9ff" />
 
 
 ##### Parte II. – Antes de terminar la clase.
@@ -39,12 +47,37 @@ Sincronización y Dead-Locks.
 	* El juego podría nunca tener un único ganador. Lo más probable es que al final sólo queden dos, peleando indefinidamente quitando y sumando puntos de vida.
 
 2. Revise el código e identifique cómo se implemento la funcionalidad antes indicada. Dada la intención del juego, un invariante debería ser que la sumatoria de los puntos de vida de todos los jugadores siempre sea el mismo(claro está, en un instante de tiempo en el que no esté en proceso una operación de incremento/reducción de tiempo). Para este caso, para N jugadores, cual debería ser este valor?.
-
+``` txt
+El valor tendria que ser N *  DEFAULT_IMMORTAL_HEALTH
+```
 3. Ejecute la aplicación y verifique cómo funcionan las opción ‘pause and check’. Se cumple el invariante?.
+``` txt
+Aquí tienes una versión parafraseada:
+
+El invariante no se mantiene, pues la suma de los puntos de vida de todos los jugadores no coincide. El resultado esperado debería ser:
+N: 3
+DEFAULT_IMMORTAL_HEALTH: 100
+300 pero es 540 como se ve.
+
+```
+<img width="581" height="263" alt="image" src="https://github.com/user-attachments/assets/2315ee7f-d116-44da-bfd4-eec1c5315b97" />
+
 
 4. Una primera hipótesis para que se presente la condición de carrera para dicha función (pause and check), es que el programa consulta la lista cuyos valores va a imprimir, a la vez que otros hilos modifican sus valores. Para corregir esto, haga lo que sea necesario para que efectivamente, antes de imprimir los resultados actuales, se pausen todos los demás hilos. Adicionalmente, implemente la opción ‘resume’.
+``` txt
+Se implementa la acción de los botones btnPauseAndCheck y btnResume
+```
+<img width="937" height="437" alt="image" src="https://github.com/user-attachments/assets/ac49f8a3-a96d-409f-9a77-dd5cb5c7781e" />
+<img width="1363" height="564" alt="image" src="https://github.com/user-attachments/assets/06da8eef-f7fb-4734-90c3-977a59b8f774" />
+
+
+
 
 5. Verifique nuevamente el funcionamiento (haga clic muchas veces en el botón). Se cumple o no el invariante?.
+``` txt
+NO cumple
+```
+<img width="542" height="235" alt="image" src="https://github.com/user-attachments/assets/90f1dd9a-5e9a-4a19-829d-f5c73685c2f8" />
 
 6. Identifique posibles regiones críticas en lo que respecta a la pelea de los inmortales. Implemente una estrategia de bloqueo que evite las condiciones de carrera. Recuerde que si usted requiere usar dos o más ‘locks’ simultáneamente, puede usar bloques sincronizados anidados:
 
@@ -55,12 +88,26 @@ Sincronización y Dead-Locks.
 		}
 	}
 	```
+<img width="1622" height="698" alt="image" src="https://github.com/user-attachments/assets/6557a25a-d1d6-4fb5-b391-7e6c847b4949" />
+
+``` txt
+Se implementa la estrategia de bloqueo en el método fight() de la clase Immortal:
+
+```
 
 7. Tras implementar su estrategia, ponga a correr su programa, y ponga atención a si éste se llega a detener. Si es así, use los programas jps y jstack para identificar por qué el programa se detuvo.
+<img width="857" height="233" alt="image" src="https://github.com/user-attachments/assets/e972985d-2676-481a-945a-e888fc845f09" />
+<img width="1761" height="347" alt="image" src="https://github.com/user-attachments/assets/cb508812-9047-47d2-8add-98b54f4b31ed" />
 
 8. Plantee una estrategia para corregir el problema antes identificado (puede revisar de nuevo las páginas 206 y 207 de _Java Concurrency in Practice_).
+<img width="1898" height="597" alt="image" src="https://github.com/user-attachments/assets/842a450f-be29-4d3e-bcbf-2a5607fd190c" />
 
 9. Una vez corregido el problema, rectifique que el programa siga funcionando de manera consistente cuando se ejecutan 100, 1000 o 10000 inmortales. Si en estos casos grandes se empieza a incumplir de nuevo el invariante, debe analizar lo realizado en el paso 4.
+<img width="935" height="394" alt="image" src="https://github.com/user-attachments/assets/71483255-7751-40cc-ba90-46ace64c3dd8" />
+
+<img width="1035" height="505" alt="image" src="https://github.com/user-attachments/assets/1cd8abdb-89a7-4c1c-b048-0489607b14db" />
+
+<img width="950" height="394" alt="image" src="https://github.com/user-attachments/assets/ced2f691-b98f-49b5-bafd-8915010f103c" />
 
 10. Un elemento molesto para la simulación es que en cierto punto de la misma hay pocos 'inmortales' vivos realizando peleas fallidas con 'inmortales' ya muertos. Es necesario ir suprimiendo los inmortales muertos de la simulación a medida que van muriendo. Para esto:
 	* Analizando el esquema de funcionamiento de la simulación, esto podría crear una condición de carrera? Implemente la funcionalidad, ejecute la simulación y observe qué problema se presenta cuando hay muchos 'inmortales' en la misma. Escriba sus conclusiones al respecto en el archivo RESPUESTAS.txt.
