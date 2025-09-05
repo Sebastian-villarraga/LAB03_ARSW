@@ -1,10 +1,21 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package edu.eci.arst.concprg.prodcons;
 
 import java.util.Queue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+/**
+ *
+ * @author hcadavid
+ */
 public class Consumer extends Thread {
 
-    private final Queue<Integer> queue;
+    private Queue<Integer> queue;
 
     public Consumer(Queue<Integer> queue) {
         this.queue = queue;
@@ -13,19 +24,15 @@ public class Consumer extends Thread {
     @Override
     public void run() {
         while (true) {
-            int elem;
             synchronized (queue) {
-                while (queue.isEmpty()) {
-                    try {
-                        queue.wait();
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        return;
-                    }
+                try {
+                    queue.notifyAll();
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Consumer.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                elem = queue.poll();
-                queue.notifyAll();
             }
+            int elem = queue.poll();
             System.out.println("Consumer consumes " + elem);
         }
     }
