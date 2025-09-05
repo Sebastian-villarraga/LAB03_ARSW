@@ -1,0 +1,6 @@
+10 ).
+
+- a) Sí, existe la posibilidad de que ocurra una condición de carrera,
+ya que múltiples hilos pueden acceder simultáneamente a la misma variable e intentar eliminar
+a otro al mismo tiempo, 
+lo que provoca modificaciones concurrentes en la lista.
