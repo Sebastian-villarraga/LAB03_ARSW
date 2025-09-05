@@ -96,17 +96,33 @@ Se implementa la estrategia de bloqueo en el método fight() de la clase Immorta
 ```
 
 7. Tras implementar su estrategia, ponga a correr su programa, y ponga atención a si éste se llega a detener. Si es así, use los programas jps y jstack para identificar por qué el programa se detuvo.
+``` txt
+Al ejecutar el comando, pudimos ver los procesos que se estaban ejecutando y sus respectivos ID:
+jps -l
+```
 <img width="857" height="233" alt="image" src="https://github.com/user-attachments/assets/e972985d-2676-481a-945a-e888fc845f09" />
+
+``` txt
+Luego con el ID del proceso que se estaba ejecutando, se ejecutó el comando jstack y se encontró un deadlock:
+
+jstack  28536
+```
+
 <img width="1761" height="347" alt="image" src="https://github.com/user-attachments/assets/cb508812-9047-47d2-8add-98b54f4b31ed" />
 
 8. Plantee una estrategia para corregir el problema antes identificado (puede revisar de nuevo las páginas 206 y 207 de _Java Concurrency in Practice_).
+
+``` txt
+Se implementa la estrategia de ordenar los locks de manera que se evite el deadlock en el método minImmortalHash() de la clase Immortal:
+```
 <img width="1898" height="597" alt="image" src="https://github.com/user-attachments/assets/842a450f-be29-4d3e-bcbf-2a5607fd190c" />
 
 9. Una vez corregido el problema, rectifique que el programa siga funcionando de manera consistente cuando se ejecutan 100, 1000 o 10000 inmortales. Si en estos casos grandes se empieza a incumplir de nuevo el invariante, debe analizar lo realizado en el paso 4.
+- 100 inmortales 
 <img width="935" height="394" alt="image" src="https://github.com/user-attachments/assets/71483255-7751-40cc-ba90-46ace64c3dd8" />
-
+- 1000 inmortales
 <img width="1035" height="505" alt="image" src="https://github.com/user-attachments/assets/1cd8abdb-89a7-4c1c-b048-0489607b14db" />
-
+- 10000 inmortales
 <img width="950" height="394" alt="image" src="https://github.com/user-attachments/assets/ced2f691-b98f-49b5-bafd-8915010f103c" />
 
 10. Un elemento molesto para la simulación es que en cierto punto de la misma hay pocos 'inmortales' vivos realizando peleas fallidas con 'inmortales' ya muertos. Es necesario ir suprimiendo los inmortales muertos de la simulación a medida que van muriendo. Para esto:
@@ -114,6 +130,11 @@ Se implementa la estrategia de bloqueo en el método fight() de la clase Immorta
 	* Corrija el problema anterior __SIN hacer uso de sincronización__, pues volver secuencial el acceso a la lista compartida de inmortales haría extremadamente lenta la simulación.
 
 11. Para finalizar, implemente la opción STOP.
+
+``` txt
+Se implementa la accion del boton btnStop
+```
+<img width="1054" height="389" alt="image" src="https://github.com/user-attachments/assets/2404c53b-c685-45b7-8456-8f024db36aee" />
 
 <!--
 ### Criterios de evaluación
